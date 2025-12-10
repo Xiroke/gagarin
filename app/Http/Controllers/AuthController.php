@@ -5,23 +5,34 @@ namespace App\Http\Controllers;
 use App\Http\Requests\Auth\CreateUserRequest;
 use App\Http\Requests\Auth\LoginUserRequest;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
-use Nette\Schema\ValidationException;
+use Illuminate\Validation\ValidationException;
 
+/**
+ *
+ */
 class AuthController extends Controller
 {
-    public function registration(CreateUserRequest $request) {
+    /**
+     * Регистрация
+     * @param  CreateUserRequest  $request
+     * @return JsonResponse
+     */
+    public function registration(CreateUserRequest $request): JsonResponse
+    {
         $validated = $request->validated();
 
-        $name = $validated['first_name'] . ' ' . $validated['last_name'];
+        $name = $validated['first_name'].' '.$validated['last_name'];
 
         if (isset($validated['patronymic'])) {
-            $name = $name . ' ' . $validated['patronymic'];
+            $name = $name.' '.$validated['patronymic'];
         }
 
         $user = User::create([
-            'name' =>  $name,
+            'name' => $name,
             'email' => $validated['email'],
             'password' => Hash::make($validated['password']),
             'birth_date' => $validated['birth_date']
@@ -36,7 +47,15 @@ class AuthController extends Controller
         return response()->json(['data' => $data]);
     }
 
-    public function authorization(LoginUserRequest $request) {
+
+    /**
+     * Вход в профиль
+     * @param  LoginUserRequest  $request
+     * @return JsonResponse
+     * @throws ValidationException
+     */
+    public function authorization(LoginUserRequest $request): JsonResponse
+    {
         $validated = $request->validated();
 
         if (!auth()->attempt($validated)) {
@@ -55,7 +74,13 @@ class AuthController extends Controller
         return response()->json(['data' => $data]);
     }
 
-    public function logout(Request $request) {
+    /**
+     * Выход из профиля
+     * @param  Request  $request
+     * @return Response
+     */
+    public function logout(Request $request): Response
+    {
         auth()->user()->currentAccessToken()->delete();
         return response()->noContent();
     }

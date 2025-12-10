@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
 
@@ -18,17 +19,17 @@ class CreateUserRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            "first_name"=> "required|string|min:2|max:255",
-            "last_name"=> "required|string|min:2|max:255",
-            "patronymic"=> "nullable|string|min:2|max:255",
-            "email"=> "required|email|unique:users,email|max:255",
-            "birth_date"=> "required|date|before:today|max:255",
-            "password"=> ["required", Password::min(8)->letters()->numbers()->mixedCase()],
+            "first_name" => "required|string|min:2|max:255",
+            "last_name" => "required|string|min:2|max:255",
+            "patronymic" => "nullable|string|min:2|max:255",
+            "email" => "required|email|unique:users,email|max:255",
+            "birth_date" => "required|date|before:today|max:255",
+            "password" => ["required", Password::min(8)->letters()->numbers()->mixedCase()],
         ];
     }
 }
