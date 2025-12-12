@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Rules\Capitalize;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Password;
@@ -24,12 +25,12 @@ class CreateUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "first_name" => "required|string|min:2|max:255",
-            "last_name" => "required|string|min:2|max:255",
-            "patronymic" => "nullable|string|min:2|max:255",
+            "first_name" => ["required", "string", "min:2", "max:255", new Capitalize],
+            "last_name" => ["required", "string", "min:2", "max:255", new Capitalize],
+            "patronymic" => ["required", "string", "min:2", "max:255", new Capitalize],
             "email" => "required|email|unique:users,email|max:255",
             "birth_date" => "required|date|before:today|max:255",
-            "password" => ["required", Password::min(8)->letters()->numbers()->mixedCase()],
+            "password" => ["required", Password::min(3)->letters()->numbers()->mixedCase()],
         ];
     }
 }

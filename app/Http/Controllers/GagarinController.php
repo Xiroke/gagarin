@@ -6,6 +6,9 @@ use App\Models\LunarMission;
 
 class GagarinController extends Controller
 {
+    /**
+     * Информауия о гагарине
+     */
     public function index(LunarMission $lunarMission)
     {
         $path = public_path('/gagarin.json');

@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Cosmonaut;
-use App\Models\Crew;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -12,10 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('cosmonaut_crew', function (Blueprint $table) {
+        Schema::create('space_flights', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Cosmonaut::class)->constrained()->cascadeOnDelete();
-            $table->foreignIdFor(Crew::class)->constrained()->cascadeOnDelete();
+            $table->string('flight_number');
+            $table->string('destination');
+            $table->date('launch_date');
+            $table->integer('seats_available');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('cosmonaut_crew');
+        Schema::dropIfExists('space_flights');
     }
 };

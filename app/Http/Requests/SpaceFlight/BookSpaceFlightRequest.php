@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Auth;
+namespace App\Http\Requests\SpaceFlight;
 
+use App\Rules\AvailableSlotsSpaceFlight;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginUserRequest extends FormRequest
+class BookSpaceFlightRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -18,13 +19,12 @@ class LoginUserRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, ValidationRule|array|string>
+     * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            "email" => "required|email|exists:users,email|max:255",
-            "password" => "required|string",
+            'flight_number' => ['required', 'exists:space_flights,flight_number', new AvailableSlotsSpaceFlight]
         ];
     }
 }

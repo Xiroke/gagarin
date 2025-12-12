@@ -4,15 +4,19 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\LunarMission\StoreLunarMissionRequest;
 use App\Http\Resources\LunarMissionResource;
+use App\Http\Resources\SearchLunarMissionResource;
+use App\Http\Resources\SearchPersonResource;
+use App\Models\Cosmonaut;
 use App\Models\Crew;
 use App\Models\LaunchSite;
 use App\Models\LunarMission;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
 class LunarMissionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Все лунные миссии
      */
     public function index()
     {
@@ -27,7 +31,7 @@ class LunarMissionController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Создание лунной миссии
      */
     public function store(StoreLunarMissionRequest $request)
     {
@@ -68,15 +72,7 @@ class LunarMissionController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     */
-    public function show(LunarMission $lunarMission)
-    {
-
-    }
-
-    /**
-     * Update the specified resource in storage.
+     * Обновление лунной миссии
      */
     public function update(StoreLunarMissionRequest $request, LunarMission $lunarMission)
     {
@@ -138,11 +134,29 @@ class LunarMissionController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Удаление.
      */
     public function destroy(LunarMission $lunarMission)
     {
         $lunarMission->delete();
         return response()->noContent();
+    }
+
+    /**
+     * Поиск по миссиям и пилотам
+     */
+    public function search(Request $request)
+    {
+        $query = $request->query('query');
+        $missions = LunarMission::whereLike('name', '%'.$query.'%')->get();
+        $pilots = Cosmonaut::whereLike('role', 'Пилот%')->whereLike('name', '%'.$query.'%')->get()->unique('name');
+
+        $data = [
+            'data' => array_merge(
+                SearchLunarMissionResource::collection($missions)->resolve(),
+                SearchPersonResource::collection($pilots)->resolve()
+            )
+        ];
+        return response()->json($data);
     }
 }
